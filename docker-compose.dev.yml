@@ -1,0 +1,11 @@
+services:
+  db:
+    ports:
+      - "5433:5432"
+
+  server:
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    volumes:
+      - .:/app
