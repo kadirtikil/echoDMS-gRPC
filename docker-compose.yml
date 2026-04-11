@@ -21,6 +21,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./certs/ca.crt:/app/certs/ca.crt:ro
+      - ./certs/server.crt:/app/certs/server.crt:ro
+      - ./certs/server.key:/app/certs/server.key:ro
 
 volumes:
   pgdata:
