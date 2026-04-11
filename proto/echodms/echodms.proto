@@ -1,0 +1,228 @@
+syntax = "proto3";
+
+package echoDMS;
+option go_package = "github.com/echoDMS/internal/pb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// -- enums --
+
+enum DocumentFormat {
+  DOCUMENT_FORMAT_UNSPECIFIED = 0;
+  TYPST = 1;
+  LATEX = 2;
+  MARKDOWN = 3;
+}
+
+enum CompilerName {
+  COMPILER_NAME_UNSPECIFIED = 0;
+  TYPST_COMPILER = 1;
+  PDFLATEX = 2;
+  XELATEX = 3;
+  LUALATEX = 4;
+  PANDOC = 5;
+}
+
+enum OutputFormat {
+  OUTPUT_FORMAT_UNSPECIFIED = 0;
+  PDF = 1;
+  PNG = 2;
+  SVG = 3;
+  HTML = 4;
+}
+
+enum CollaboratorRole {
+  COLLABORATOR_ROLE_UNSPECIFIED = 0;
+  ADMIN = 1;
+  EDITOR = 2;
+  VIEWER = 3;
+}
+
+enum CollaboratorStatus {
+  COLLABORATOR_STATUS_UNSPECIFIED = 0;
+  INVITED = 1;
+  ACCEPTED = 2;
+  PENDING = 3;
+  DECLINED = 4;
+  BLOCKED = 5;
+}
+
+message Document {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  DocumentFormat format = 4;
+  CompilerName compiler = 5;
+  string compiler_version = 6;
+  OutputFormat output_format = 7;
+  string owner_id = 8;
+  bool is_archived = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+message Page {
+  string id = 1;
+  string document_id = 2;
+  string content = 3;
+  int32 sort_order = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message DocumentCollaborator {
+  string id = 1;
+  string document_id = 2;
+  string user_id = 3;
+  CollaboratorRole role = 4;
+  CollaboratorStatus status = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message DocumentVersion {
+  string id = 1;
+  string document_id = 2;
+  int32 version_number = 3;
+  string snapshot = 4; // JSON string
+  string created_by = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message CompiledOutput {
+  string id = 1;
+  string document_id = 2;
+  string version_id = 3;
+  OutputFormat output_format = 4;
+  string file_path = 5;
+  int64 file_size_bytes = 6;
+  google.protobuf.Timestamp compiled_at = 7;
+}
+
+
+// --- Page Request/Response messages ---
+
+message GetPageRequest {
+  string id = 1;
+}
+
+message ListPagesRequest {
+  string document_id = 1;
+}
+
+message ListPagesResponse {
+  repeated Page pages = 1;
+}
+
+message CreatePageRequest {
+  string document_id = 1;
+  string content = 2;
+  int32 sort_order = 3;
+}
+
+message UpdatePageRequest {
+  string id = 1;
+  string content = 2;
+  int32 sort_order = 3;
+}
+
+message DeletePageRequest {
+  string id = 1;
+}
+
+
+// --- Collaborator Request/Response messages ---
+
+message GetCollaboratorRequest {
+  string id = 1;
+}
+
+message ListCollaboratorsRequest {
+  string document_id = 1;
+}
+
+message ListCollaboratorsResponse {
+  repeated DocumentCollaborator collaborators = 1;
+}
+
+message AddCollaboratorRequest {
+  string document_id = 1;
+  string user_id = 2;
+  CollaboratorRole role = 3;
+}
+
+message UpdateCollaboratorRequest {
+  string id = 1;
+  CollaboratorRole role = 2;
+  CollaboratorStatus status = 3;
+}
+
+message RemoveCollaboratorRequest {
+  string id = 1;
+}
+
+
+// --- Version Request/Response messages ---
+
+message GetVersionRequest {
+  string id = 1;
+}
+
+message ListVersionsRequest {
+  string document_id = 1;
+}
+
+message ListVersionsResponse {
+  repeated DocumentVersion versions = 1;
+}
+
+message CreateVersionRequest {
+  string document_id = 1;
+  string snapshot = 2;
+  string created_by = 3;
+}
+
+
+// --- CompiledOutput Request/Response messages ---
+
+message GetCompiledOutputRequest {
+  string id = 1;
+}
+
+message ListCompiledOutputsRequest {
+  string document_id = 1;
+}
+
+message ListCompiledOutputsResponse {
+  repeated CompiledOutput outputs = 1;
+}
+
+
+// --- Services ---
+
+service PageService {
+  rpc CreatePage(CreatePageRequest) returns (Page);
+  rpc GetPage(GetPageRequest) returns (Page);
+  rpc ListPages(ListPagesRequest) returns (ListPagesResponse);
+  rpc UpdatePage(UpdatePageRequest) returns (Page);
+  rpc DeletePage(DeletePageRequest) returns (google.protobuf.Empty);
+}
+
+service CollaboratorService {
+  rpc AddCollaborator(AddCollaboratorRequest) returns (DocumentCollaborator);
+  rpc GetCollaborator(GetCollaboratorRequest) returns (DocumentCollaborator);
+  rpc ListCollaborators(ListCollaboratorsRequest) returns (ListCollaboratorsResponse);
+  rpc UpdateCollaborator(UpdateCollaboratorRequest) returns (DocumentCollaborator);
+  rpc RemoveCollaborator(RemoveCollaboratorRequest) returns (google.protobuf.Empty);
+}
+
+service VersionService {
+  rpc CreateVersion(CreateVersionRequest) returns (DocumentVersion);
+  rpc GetVersion(GetVersionRequest) returns (DocumentVersion);
+  rpc ListVersions(ListVersionsRequest) returns (ListVersionsResponse);
+}
+
+service CompiledOutputService {
+  rpc GetCompiledOutput(GetCompiledOutputRequest) returns (CompiledOutput);
+  rpc ListCompiledOutputs(ListCompiledOutputsRequest) returns (ListCompiledOutputsResponse);
+}
