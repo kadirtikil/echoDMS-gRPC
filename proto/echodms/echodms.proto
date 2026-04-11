@@ -200,6 +200,10 @@ message ListCompiledOutputsResponse {
 
 // --- Services ---
 
+service DocumentService {
+  rpc CreateDocument(CreateDocumentRequest)
+}
+
 service PageService {
   rpc CreatePage(CreatePageRequest) returns (Page);
   rpc GetPage(GetPageRequest) returns (Page);
