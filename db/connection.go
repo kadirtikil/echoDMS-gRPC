@@ -22,4 +22,5 @@ func NewPool(ctx context.Context, connString string) (*pgxpool.Pool, error) {
 	}
 
 	return pool, nil
+
 }

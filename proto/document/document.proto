@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package document;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/echoDMS/proto/document";
+
+enum DocumentFormat {
+  DOCUMENT_FORMAT_UNSPECIFIED = 0;
+  TYPST = 1;
+  LATEX = 2;
+  MARKDOWN = 3;
+}
+
+enum CompilerName {
+  COMPILER_NAME_UNSPECIFIED = 0;
+  TYPST_COMPILER = 1;
+  PDFLATEX = 2;
+  XELATEX = 3;
+  LUALATEX = 4;
+  PANDOC = 5;
+}
+
+enum OutputFormat {
+  OUTPUT_FORMAT_UNSPECIFIED = 0;
+  PDF = 1;
+  PNG = 2;
+  SVG = 3;
+  HTML = 4;
+}
+
+message Document {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  DocumentFormat format = 4;
+  CompilerName compiler = 5;
+  string compiler_version = 6;
+  OutputFormat output_format = 7;
+  string owner_id = 8;
+  bool is_archived = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// --- Page Request/Response messages ---
+
+message GetDocumentRequest {
+  string id = 1;
+}
+
+message GetDocumentResponse {
+  Document document = 1;
+}
+
+message PaginateDocumentsRequest {
+  string owner_id = 1;
+  int32 page_number = 2;
+  int32 page_size = 3;
+}
+
+message PaginateDocumentsResponse {
+  repeated Document documents = 1;
+}
+
+message CreateDocumentRequest {
+  string title = 1;
+  string description = 2;
+  DocumentFormat format = 3;
+  CompilerName compiler = 4;
+  string compiler_version = 5;
+  OutputFormat output_format = 6;
+  string owner_id = 7;
+}
+
+message UpdateDocumentRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  DocumentFormat format = 4;
+  CompilerName compiler = 5;
+  string compiler_version = 6;
+  OutputFormat output_format = 7;
+}
+
+message DeleteDocumentRequest {
+  string id = 1;
+}
+
+message DeleteDocumentsRequest {
+  repeated string ids = 1;
+}
+
+// Services of Document and related entities (Page, Collaborator, Version, CompiledOutput)
+service DocumentService {
+  // Get a document by ID, including its pages, collaborators, versions, and compiled outputs
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+  // Paginate documents for a specific owner, returning basic document info without pages/collaborators/versions/compiled outputs
+  rpc PaginateDocuments(PaginateDocumentsRequest) returns (PaginateDocumentsResponse);
+  // Create a new document
+  rpc CreateDocument(CreateDocumentRequest) returns (Document);
+  // Update a document's metadata
+  rpc UpdateDocument(UpdateDocumentRequest) returns (Document);
+  // Delete a single document by ID
+  rpc DeleteDocument(DeleteDocumentRequest) returns (google.protobuf.Empty);
+  // Delete multiple documents by their IDs
+  rpc DeleteDocuments(DeleteDocumentsRequest) returns (google.protobuf.Empty);
+}

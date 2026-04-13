@@ -7,6 +7,7 @@ services:
       POSTGRES_DB: echo
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/init-db:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
@@ -17,7 +18,7 @@ services:
     ports:
       - "50051:50051"
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5433/echo?sslmode=disable
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/echo?sslmode=disable
     depends_on:
       db:
         condition: service_healthy

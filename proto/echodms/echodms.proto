@@ -8,30 +8,6 @@ import "google/protobuf/empty.proto";
 
 // -- enums --
 
-enum DocumentFormat {
-  DOCUMENT_FORMAT_UNSPECIFIED = 0;
-  TYPST = 1;
-  LATEX = 2;
-  MARKDOWN = 3;
-}
-
-enum CompilerName {
-  COMPILER_NAME_UNSPECIFIED = 0;
-  TYPST_COMPILER = 1;
-  PDFLATEX = 2;
-  XELATEX = 3;
-  LUALATEX = 4;
-  PANDOC = 5;
-}
-
-enum OutputFormat {
-  OUTPUT_FORMAT_UNSPECIFIED = 0;
-  PDF = 1;
-  PNG = 2;
-  SVG = 3;
-  HTML = 4;
-}
-
 enum CollaboratorRole {
   COLLABORATOR_ROLE_UNSPECIFIED = 0;
   ADMIN = 1;
@@ -46,20 +22,6 @@ enum CollaboratorStatus {
   PENDING = 3;
   DECLINED = 4;
   BLOCKED = 5;
-}
-
-message Document {
-  string id = 1;
-  string title = 2;
-  string description = 3;
-  DocumentFormat format = 4;
-  CompilerName compiler = 5;
-  string compiler_version = 6;
-  OutputFormat output_format = 7;
-  string owner_id = 8;
-  bool is_archived = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
 }
 
 message Page {
@@ -87,6 +49,14 @@ message DocumentVersion {
   string snapshot = 4; // JSON string
   string created_by = 5;
   google.protobuf.Timestamp created_at = 6;
+}
+
+enum OutputFormat {
+  OUTPUT_FORMAT_UNSPECIFIED = 0;
+  PDF = 1;
+  PNG = 2;
+  SVG = 3;
+  HTML = 4;
 }
 
 message CompiledOutput {
@@ -199,11 +169,6 @@ message ListCompiledOutputsResponse {
 
 
 // --- Services ---
-
-service DocumentService {
-  rpc CreateDocument(CreateDocumentRequest)
-}
-
 service PageService {
   rpc CreatePage(CreatePageRequest) returns (Page);
   rpc GetPage(GetPageRequest) returns (Page);

@@ -7,10 +7,9 @@ import (
 	"net"
 
 	"github.com/echoDMS/db"
-	"github.com/echoDMS/migrations"
 	"github.com/echoDMS/mtls"
-	pb "github.com/echoDMS/proto/echodms"
-	"github.com/echoDMS/services"
+	"github.com/echoDMS/proto/document"
+	document_service "github.com/echoDMS/services/document"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -23,19 +22,6 @@ func main() {
 	}
 	defer pool.Close()
 
-	// MIGRATIONS
-	if err := migrations.CreateMigrationsTable(context.Background(), pool); err != nil {
-		log.Fatalf("Failed to create Migrations table: %v", err)
-	}
-
-	if err := migrations.RunInitMigration(context.Background(), pool); err != nil {
-		log.Fatalf("Failed to run initial migration: %v", err)
-	}
-
-	if err := migrations.RunCustomMigration(context.Background(), pool, "002_seed.sql"); err != nil {
-		log.Fatalf("Failed to run custom migration: %v", err)
-	}
-
 	// gRPC SERVER
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -47,15 +33,18 @@ func main() {
 		log.Fatalf("Failed to load TLS credentials: %v", err)
 	}
 	fmt.Println(tlsCreds)
+
 	grpcServer := grpc.NewServer()
 	reflection.Register(grpcServer)
 
 	// REGISTER SERVICES HERE
-	pageService := services.NewPageService(pool)
-	pb.RegisterPageServiceServer(grpcServer, pageService)
+	documentService := document_service.NewDocumentService(pool)
+
+	document.RegisterDocumentServiceServer(grpcServer, documentService)
 
 	log.Println("gRPC server is running on: 50051")
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server: %v", err)
 	}
+
 }
