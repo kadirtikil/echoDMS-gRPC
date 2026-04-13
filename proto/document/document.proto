@@ -3,7 +3,6 @@ syntax = "proto3";
 package document;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 option go_package = "github.com/echoDMS/proto/document";
 
@@ -89,6 +88,11 @@ message DeleteDocumentRequest {
   string id = 1;
 }
 
+message DeleteDocumentResponse {
+  string id = 1;
+  bool success = 2;
+}
+
 message DeleteDocumentsRequest {
   repeated string ids = 1;
 }
@@ -104,7 +108,5 @@ service DocumentService {
   // Update a document's metadata
   rpc UpdateDocument(UpdateDocumentRequest) returns (Document);
   // Delete a single document by ID
-  rpc DeleteDocument(DeleteDocumentRequest) returns (google.protobuf.Empty);
-  // Delete multiple documents by their IDs
-  rpc DeleteDocuments(DeleteDocumentsRequest) returns (google.protobuf.Empty);
+  rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
 }

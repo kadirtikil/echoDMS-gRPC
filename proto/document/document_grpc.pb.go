@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -25,7 +24,6 @@ const (
 	DocumentService_CreateDocument_FullMethodName    = "/document.DocumentService/CreateDocument"
 	DocumentService_UpdateDocument_FullMethodName    = "/document.DocumentService/UpdateDocument"
 	DocumentService_DeleteDocument_FullMethodName    = "/document.DocumentService/DeleteDocument"
-	DocumentService_DeleteDocuments_FullMethodName   = "/document.DocumentService/DeleteDocuments"
 )
 
 // DocumentServiceClient is the client API for DocumentService service.
@@ -43,9 +41,7 @@ type DocumentServiceClient interface {
 	// Update a document's metadata
 	UpdateDocument(ctx context.Context, in *UpdateDocumentRequest, opts ...grpc.CallOption) (*Document, error)
 	// Delete a single document by ID
-	DeleteDocument(ctx context.Context, in *DeleteDocumentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Delete multiple documents by their IDs
-	DeleteDocuments(ctx context.Context, in *DeleteDocumentsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteDocument(ctx context.Context, in *DeleteDocumentRequest, opts ...grpc.CallOption) (*DeleteDocumentResponse, error)
 }
 
 type documentServiceClient struct {
@@ -96,20 +92,10 @@ func (c *documentServiceClient) UpdateDocument(ctx context.Context, in *UpdateDo
 	return out, nil
 }
 
-func (c *documentServiceClient) DeleteDocument(ctx context.Context, in *DeleteDocumentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *documentServiceClient) DeleteDocument(ctx context.Context, in *DeleteDocumentRequest, opts ...grpc.CallOption) (*DeleteDocumentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(DeleteDocumentResponse)
 	err := c.cc.Invoke(ctx, DocumentService_DeleteDocument_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *documentServiceClient) DeleteDocuments(ctx context.Context, in *DeleteDocumentsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, DocumentService_DeleteDocuments_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,9 +117,7 @@ type DocumentServiceServer interface {
 	// Update a document's metadata
 	UpdateDocument(context.Context, *UpdateDocumentRequest) (*Document, error)
 	// Delete a single document by ID
-	DeleteDocument(context.Context, *DeleteDocumentRequest) (*emptypb.Empty, error)
-	// Delete multiple documents by their IDs
-	DeleteDocuments(context.Context, *DeleteDocumentsRequest) (*emptypb.Empty, error)
+	DeleteDocument(context.Context, *DeleteDocumentRequest) (*DeleteDocumentResponse, error)
 	mustEmbedUnimplementedDocumentServiceServer()
 }
 
@@ -156,11 +140,8 @@ func (UnimplementedDocumentServiceServer) CreateDocument(context.Context, *Creat
 func (UnimplementedDocumentServiceServer) UpdateDocument(context.Context, *UpdateDocumentRequest) (*Document, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateDocument not implemented")
 }
-func (UnimplementedDocumentServiceServer) DeleteDocument(context.Context, *DeleteDocumentRequest) (*emptypb.Empty, error) {
+func (UnimplementedDocumentServiceServer) DeleteDocument(context.Context, *DeleteDocumentRequest) (*DeleteDocumentResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteDocument not implemented")
-}
-func (UnimplementedDocumentServiceServer) DeleteDocuments(context.Context, *DeleteDocumentsRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteDocuments not implemented")
 }
 func (UnimplementedDocumentServiceServer) mustEmbedUnimplementedDocumentServiceServer() {}
 func (UnimplementedDocumentServiceServer) testEmbeddedByValue()                         {}
@@ -273,24 +254,6 @@ func _DocumentService_DeleteDocument_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DocumentService_DeleteDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteDocumentsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DocumentServiceServer).DeleteDocuments(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DocumentService_DeleteDocuments_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DocumentServiceServer).DeleteDocuments(ctx, req.(*DeleteDocumentsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // DocumentService_ServiceDesc is the grpc.ServiceDesc for DocumentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -317,10 +280,6 @@ var DocumentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDocument",
 			Handler:    _DocumentService_DeleteDocument_Handler,
-		},
-		{
-			MethodName: "DeleteDocuments",
-			Handler:    _DocumentService_DeleteDocuments_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

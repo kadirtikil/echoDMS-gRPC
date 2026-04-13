@@ -235,3 +235,135 @@ func TestCreateDocument(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteDocument(t *testing.T) {
+	service := document_service.NewDocumentService(pg)
+
+	created, err := service.CreateDocument(context.Background(), &document.CreateDocumentRequest{
+		Title:           "To Be Deleted",
+		Description:     "This will be deleted",
+		Format:          document.DocumentFormat_TYPST,
+		Compiler:        document.CompilerName_TYPST_COMPILER,
+		CompilerVersion: "0.12",
+		OutputFormat:    document.OutputFormat_PDF,
+		OwnerId:         "a1b2c3d4-1111-1111-1111-000000000002",
+	})
+	if err != nil {
+		t.Fatalf("failed to create test document: %v", err)
+	}
+
+	tests := []struct {
+		name        string
+		id          string
+		wantDeleted bool
+		wantErr     bool
+	}{
+		{
+			name:        "delete existing document",
+			id:          created.Id,
+			wantDeleted: true,
+		},
+		{
+			name:        "delete non-existent document",
+			id:          "00000000-0000-0000-0000-000000000000",
+			wantDeleted: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := service.DeleteDocument(context.Background(), &document.DeleteDocumentRequest{
+				Id: tt.id,
+			})
+
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.Equal(t, tt.wantDeleted, resp.Success)
+		})
+	}
+}
+
+func TestUpdateDocument(t *testing.T) {
+	service := document_service.NewDocumentService(pg)
+
+	// Create a document to update
+	created, err := service.CreateDocument(context.Background(), &document.CreateDocumentRequest{
+		Title:           "Before Update",
+		Description:     "Original description",
+		Format:          document.DocumentFormat_TYPST,
+		Compiler:        document.CompilerName_TYPST_COMPILER,
+		CompilerVersion: "0.12",
+		OutputFormat:    document.OutputFormat_PDF,
+		OwnerId:         "a1b2c3d4-1111-1111-1111-000000000002",
+	})
+	if err != nil {
+		t.Fatalf("failed to create test document: %v", err)
+	}
+
+	t.Cleanup(func() {
+		pg.Exec(context.Background(), "DELETE FROM documents WHERE id = $1", created.Id)
+	})
+
+	tests := []struct {
+		name            string
+		id              string
+		title           string
+		description     string
+		format          document.DocumentFormat
+		compiler        document.CompilerName
+		compilerVersion string
+		outputFormat    document.OutputFormat
+		wantErr         bool
+	}{
+		{
+			name:            "valid update",
+			id:              created.Id,
+			title:           "After Update",
+			description:     "Updated description",
+			format:          document.DocumentFormat_LATEX,
+			compiler:        document.CompilerName_PDFLATEX,
+			compilerVersion: "1.0",
+			outputFormat:    document.OutputFormat_PDF,
+			wantErr:         false,
+		},
+		{
+			name:            "non-existent document",
+			id:              "00000000-0000-0000-0000-000000000000",
+			title:           "Should Fail",
+			description:     "This update should fail",
+			format:          document.DocumentFormat_TYPST,
+			compiler:        document.CompilerName_TYPST_COMPILER,
+			compilerVersion: "0.12",
+			outputFormat:    document.OutputFormat_PDF,
+			wantErr:         true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp, err := service.UpdateDocument(context.Background(), &document.UpdateDocumentRequest{
+				Id:              tt.id,
+				Title:           tt.title,
+				Description:     tt.description,
+				Format:          tt.format,
+				Compiler:        tt.compiler,
+				CompilerVersion: tt.compilerVersion,
+				OutputFormat:    tt.outputFormat,
+			})
+
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.NotNil(t, resp)
+			assert.Equal(t, tt.id, resp.Id)
+			assert.Equal(t, tt.title, resp.Title)
+		})
+	}
+}

@@ -9,7 +9,6 @@ package document
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -732,6 +731,58 @@ func (x *DeleteDocumentRequest) GetId() string {
 	return ""
 }
 
+type DeleteDocumentResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDocumentResponse) Reset() {
+	*x = DeleteDocumentResponse{}
+	mi := &file_proto_document_document_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDocumentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDocumentResponse) ProtoMessage() {}
+
+func (x *DeleteDocumentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_document_document_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDocumentResponse.ProtoReflect.Descriptor instead.
+func (*DeleteDocumentResponse) Descriptor() ([]byte, []int) {
+	return file_proto_document_document_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeleteDocumentResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *DeleteDocumentResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 type DeleteDocumentsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ids           []string               `protobuf:"bytes,1,rep,name=ids,proto3" json:"ids,omitempty"`
@@ -741,7 +792,7 @@ type DeleteDocumentsRequest struct {
 
 func (x *DeleteDocumentsRequest) Reset() {
 	*x = DeleteDocumentsRequest{}
-	mi := &file_proto_document_document_proto_msgTypes[8]
+	mi := &file_proto_document_document_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -753,7 +804,7 @@ func (x *DeleteDocumentsRequest) String() string {
 func (*DeleteDocumentsRequest) ProtoMessage() {}
 
 func (x *DeleteDocumentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_document_document_proto_msgTypes[8]
+	mi := &file_proto_document_document_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -766,7 +817,7 @@ func (x *DeleteDocumentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteDocumentsRequest.ProtoReflect.Descriptor instead.
 func (*DeleteDocumentsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_document_document_proto_rawDescGZIP(), []int{8}
+	return file_proto_document_document_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DeleteDocumentsRequest) GetIds() []string {
@@ -780,7 +831,7 @@ var File_proto_document_document_proto protoreflect.FileDescriptor
 
 const file_proto_document_document_proto_rawDesc = "" +
 	"\n" +
-	"\x1dproto/document/document.proto\x12\bdocument\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xd2\x03\n" +
+	"\x1dproto/document/document.proto\x12\bdocument\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd2\x03\n" +
 	"\bDocument\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12 \n" +
@@ -825,7 +876,10 @@ const file_proto_document_document_proto_rawDesc = "" +
 	"\x10compiler_version\x18\x06 \x01(\tR\x0fcompilerVersion\x12;\n" +
 	"\routput_format\x18\a \x01(\x0e2\x16.document.OutputFormatR\foutputFormat\"'\n" +
 	"\x15DeleteDocumentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"*\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"B\n" +
+	"\x16DeleteDocumentResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"*\n" +
 	"\x16DeleteDocumentsRequest\x12\x10\n" +
 	"\x03ids\x18\x01 \x03(\tR\x03ids*U\n" +
 	"\x0eDocumentFormat\x12\x1f\n" +
@@ -846,14 +900,13 @@ const file_proto_document_document_proto_rawDesc = "" +
 	"\x03PDF\x10\x01\x12\a\n" +
 	"\x03PNG\x10\x02\x12\a\n" +
 	"\x03SVG\x10\x03\x12\b\n" +
-	"\x04HTML\x10\x042\xe1\x03\n" +
+	"\x04HTML\x10\x042\x9e\x03\n" +
 	"\x0fDocumentService\x12J\n" +
 	"\vGetDocument\x12\x1c.document.GetDocumentRequest\x1a\x1d.document.GetDocumentResponse\x12\\\n" +
 	"\x11PaginateDocuments\x12\".document.PaginateDocumentsRequest\x1a#.document.PaginateDocumentsResponse\x12E\n" +
 	"\x0eCreateDocument\x12\x1f.document.CreateDocumentRequest\x1a\x12.document.Document\x12E\n" +
-	"\x0eUpdateDocument\x12\x1f.document.UpdateDocumentRequest\x1a\x12.document.Document\x12I\n" +
-	"\x0eDeleteDocument\x12\x1f.document.DeleteDocumentRequest\x1a\x16.google.protobuf.Empty\x12K\n" +
-	"\x0fDeleteDocuments\x12 .document.DeleteDocumentsRequest\x1a\x16.google.protobuf.EmptyB#Z!github.com/echoDMS/proto/documentb\x06proto3"
+	"\x0eUpdateDocument\x12\x1f.document.UpdateDocumentRequest\x1a\x12.document.Document\x12S\n" +
+	"\x0eDeleteDocument\x12\x1f.document.DeleteDocumentRequest\x1a .document.DeleteDocumentResponseB#Z!github.com/echoDMS/proto/documentb\x06proto3"
 
 var (
 	file_proto_document_document_proto_rawDescOnce sync.Once
@@ -868,7 +921,7 @@ func file_proto_document_document_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_document_document_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_proto_document_document_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_proto_document_document_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_proto_document_document_proto_goTypes = []any{
 	(DocumentFormat)(0),               // 0: document.DocumentFormat
 	(CompilerName)(0),                 // 1: document.CompilerName
@@ -881,16 +934,16 @@ var file_proto_document_document_proto_goTypes = []any{
 	(*CreateDocumentRequest)(nil),     // 8: document.CreateDocumentRequest
 	(*UpdateDocumentRequest)(nil),     // 9: document.UpdateDocumentRequest
 	(*DeleteDocumentRequest)(nil),     // 10: document.DeleteDocumentRequest
-	(*DeleteDocumentsRequest)(nil),    // 11: document.DeleteDocumentsRequest
-	(*timestamppb.Timestamp)(nil),     // 12: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),             // 13: google.protobuf.Empty
+	(*DeleteDocumentResponse)(nil),    // 11: document.DeleteDocumentResponse
+	(*DeleteDocumentsRequest)(nil),    // 12: document.DeleteDocumentsRequest
+	(*timestamppb.Timestamp)(nil),     // 13: google.protobuf.Timestamp
 }
 var file_proto_document_document_proto_depIdxs = []int32{
 	0,  // 0: document.Document.format:type_name -> document.DocumentFormat
 	1,  // 1: document.Document.compiler:type_name -> document.CompilerName
 	2,  // 2: document.Document.output_format:type_name -> document.OutputFormat
-	12, // 3: document.Document.created_at:type_name -> google.protobuf.Timestamp
-	12, // 4: document.Document.updated_at:type_name -> google.protobuf.Timestamp
+	13, // 3: document.Document.created_at:type_name -> google.protobuf.Timestamp
+	13, // 4: document.Document.updated_at:type_name -> google.protobuf.Timestamp
 	3,  // 5: document.GetDocumentResponse.document:type_name -> document.Document
 	3,  // 6: document.PaginateDocumentsResponse.documents:type_name -> document.Document
 	0,  // 7: document.CreateDocumentRequest.format:type_name -> document.DocumentFormat
@@ -904,15 +957,13 @@ var file_proto_document_document_proto_depIdxs = []int32{
 	8,  // 15: document.DocumentService.CreateDocument:input_type -> document.CreateDocumentRequest
 	9,  // 16: document.DocumentService.UpdateDocument:input_type -> document.UpdateDocumentRequest
 	10, // 17: document.DocumentService.DeleteDocument:input_type -> document.DeleteDocumentRequest
-	11, // 18: document.DocumentService.DeleteDocuments:input_type -> document.DeleteDocumentsRequest
-	5,  // 19: document.DocumentService.GetDocument:output_type -> document.GetDocumentResponse
-	7,  // 20: document.DocumentService.PaginateDocuments:output_type -> document.PaginateDocumentsResponse
-	3,  // 21: document.DocumentService.CreateDocument:output_type -> document.Document
-	3,  // 22: document.DocumentService.UpdateDocument:output_type -> document.Document
-	13, // 23: document.DocumentService.DeleteDocument:output_type -> google.protobuf.Empty
-	13, // 24: document.DocumentService.DeleteDocuments:output_type -> google.protobuf.Empty
-	19, // [19:25] is the sub-list for method output_type
-	13, // [13:19] is the sub-list for method input_type
+	5,  // 18: document.DocumentService.GetDocument:output_type -> document.GetDocumentResponse
+	7,  // 19: document.DocumentService.PaginateDocuments:output_type -> document.PaginateDocumentsResponse
+	3,  // 20: document.DocumentService.CreateDocument:output_type -> document.Document
+	3,  // 21: document.DocumentService.UpdateDocument:output_type -> document.Document
+	11, // 22: document.DocumentService.DeleteDocument:output_type -> document.DeleteDocumentResponse
+	18, // [18:23] is the sub-list for method output_type
+	13, // [13:18] is the sub-list for method input_type
 	13, // [13:13] is the sub-list for extension type_name
 	13, // [13:13] is the sub-list for extension extendee
 	0,  // [0:13] is the sub-list for field type_name
@@ -929,7 +980,7 @@ func file_proto_document_document_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_document_document_proto_rawDesc), len(file_proto_document_document_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

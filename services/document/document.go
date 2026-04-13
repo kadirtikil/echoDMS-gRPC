@@ -101,3 +101,34 @@ func (ds *DocumentService) CreateDocument(ctx context.Context, req *document.Cre
 		OwnerId:     req.OwnerId,
 	}, nil
 }
+
+func (ds *DocumentService) UpdateDocument(ctx context.Context, req *document.UpdateDocumentRequest) (*document.Document, error) {
+	sql := `UPDATE documents SET title = $1, description = $2, format = $3, compiler = $4, compiler_version = $5, output_format = $6
+							WHERE id = $7 RETURNING id, title, description, format, owner_id`
+	formatStr := formatToDB[req.Format]
+	compilerStr := compilerToDB[req.Compiler]
+	outputStr := outputFormatToDB[req.OutputFormat]
+
+	var doc document.Document
+	var formatFromDB string
+	err := ds.pool.QueryRow(ctx, sql, req.Title, req.Description, formatStr, compilerStr, req.CompilerVersion, outputStr, req.Id).
+		Scan(&doc.Id, &doc.Title, &doc.Description, &formatFromDB, &doc.OwnerId)
+	if err != nil {
+		return nil, err
+	}
+	doc.Format = document.DocumentFormat(document.DocumentFormat_value[strings.ToUpper(formatFromDB)])
+
+	return &doc, nil
+}
+
+func (ds *DocumentService) DeleteDocument(ctx context.Context, req *document.DeleteDocumentRequest) (*document.DeleteDocumentResponse, error) {
+	sql := `DELETE FROM documents WHERE id = $1`
+	result, err := ds.pool.Exec(ctx, sql, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &document.DeleteDocumentResponse{
+		Success: result.RowsAffected() > 0,
+	}, nil
+}
