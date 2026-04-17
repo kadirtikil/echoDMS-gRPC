@@ -5,5 +5,6 @@ This is the gRPC implementation of echoDMS. It is a separate project from the ma
 The gRPC implementation does not contain any user authentification.
 
 ## FastAPI as a Gateway
+FastAPI is used as the gateway.
 
 ## mTLS & Security
