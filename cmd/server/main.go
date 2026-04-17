@@ -9,7 +9,9 @@ import (
 	"github.com/echoDMS/db"
 	"github.com/echoDMS/mtls"
 	"github.com/echoDMS/proto/document"
+	"github.com/echoDMS/proto/page"
 	document_service "github.com/echoDMS/services/document"
+	page_service "github.com/echoDMS/services/page"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -39,8 +41,10 @@ func main() {
 
 	// REGISTER SERVICES HERE
 	documentService := document_service.NewDocumentService(pool)
+	pageService := page_service.NewPageService(pool)
 
 	document.RegisterDocumentServiceServer(grpcServer, documentService)
+	page.RegisterPageServiceServer(grpcServer, pageService)
 
 	log.Println("gRPC server is running on: 50051")
 	if err := grpcServer.Serve(lis); err != nil {

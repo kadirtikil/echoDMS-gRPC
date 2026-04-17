@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -39,10 +38,10 @@ type PageServiceClient interface {
 	GetPage(ctx context.Context, in *GetPageRequest, opts ...grpc.CallOption) (*Page, error)
 	// PaginatePages retrieves a paginated list of pages for a specific document.
 	PaginatePages(ctx context.Context, in *PaginatePagesRequest, opts ...grpc.CallOption) (*PaginatePagesResponse, error)
-	// UpdatePage updates the content or sort order of a page.
+	// UpdatePage updates the content or page number of a page.
 	UpdatePage(ctx context.Context, in *UpdatePageRequest, opts ...grpc.CallOption) (*Page, error)
 	// DeletePage deletes a page by its ID.
-	DeletePage(ctx context.Context, in *DeletePageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeletePage(ctx context.Context, in *DeletePageRequest, opts ...grpc.CallOption) (*DeletePageResponse, error)
 }
 
 type pageServiceClient struct {
@@ -93,9 +92,9 @@ func (c *pageServiceClient) UpdatePage(ctx context.Context, in *UpdatePageReques
 	return out, nil
 }
 
-func (c *pageServiceClient) DeletePage(ctx context.Context, in *DeletePageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *pageServiceClient) DeletePage(ctx context.Context, in *DeletePageRequest, opts ...grpc.CallOption) (*DeletePageResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(DeletePageResponse)
 	err := c.cc.Invoke(ctx, PageService_DeletePage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -115,10 +114,10 @@ type PageServiceServer interface {
 	GetPage(context.Context, *GetPageRequest) (*Page, error)
 	// PaginatePages retrieves a paginated list of pages for a specific document.
 	PaginatePages(context.Context, *PaginatePagesRequest) (*PaginatePagesResponse, error)
-	// UpdatePage updates the content or sort order of a page.
+	// UpdatePage updates the content or page number of a page.
 	UpdatePage(context.Context, *UpdatePageRequest) (*Page, error)
 	// DeletePage deletes a page by its ID.
-	DeletePage(context.Context, *DeletePageRequest) (*emptypb.Empty, error)
+	DeletePage(context.Context, *DeletePageRequest) (*DeletePageResponse, error)
 	mustEmbedUnimplementedPageServiceServer()
 }
 
@@ -141,7 +140,7 @@ func (UnimplementedPageServiceServer) PaginatePages(context.Context, *PaginatePa
 func (UnimplementedPageServiceServer) UpdatePage(context.Context, *UpdatePageRequest) (*Page, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdatePage not implemented")
 }
-func (UnimplementedPageServiceServer) DeletePage(context.Context, *DeletePageRequest) (*emptypb.Empty, error) {
+func (UnimplementedPageServiceServer) DeletePage(context.Context, *DeletePageRequest) (*DeletePageResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeletePage not implemented")
 }
 func (UnimplementedPageServiceServer) mustEmbedUnimplementedPageServiceServer() {}

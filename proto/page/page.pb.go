@@ -9,7 +9,6 @@ package page
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -29,7 +28,7 @@ type Page struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DocumentId    string                 `protobuf:"bytes,2,opt,name=document_id,json=documentId,proto3" json:"document_id,omitempty"`
 	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
-	SortOrder     int32                  `protobuf:"varint,4,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	PageNumber    int32                  `protobuf:"varint,4,opt,name=page_number,json=pageNumber,proto3" json:"page_number,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -87,9 +86,9 @@ func (x *Page) GetContent() string {
 	return ""
 }
 
-func (x *Page) GetSortOrder() int32 {
+func (x *Page) GetPageNumber() int32 {
 	if x != nil {
-		return x.SortOrder
+		return x.PageNumber
 	}
 	return 0
 }
@@ -264,7 +263,7 @@ type CreatePageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DocumentId    string                 `protobuf:"bytes,1,opt,name=document_id,json=documentId,proto3" json:"document_id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	SortOrder     int32                  `protobuf:"varint,3,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	PageNumber    int32                  `protobuf:"varint,3,opt,name=page_number,json=pageNumber,proto3" json:"page_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -313,19 +312,19 @@ func (x *CreatePageRequest) GetContent() string {
 	return ""
 }
 
-func (x *CreatePageRequest) GetSortOrder() int32 {
+func (x *CreatePageRequest) GetPageNumber() int32 {
 	if x != nil {
-		return x.SortOrder
+		return x.PageNumber
 	}
 	return 0
 }
 
-// UpdatePageRequest is used to update the content or sort order of an existing page.
+// UpdatePageRequest is used to update the content or page number of an existing page.
 type UpdatePageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	SortOrder     int32                  `protobuf:"varint,3,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	PageNumber    int32                  `protobuf:"varint,3,opt,name=page_number,json=pageNumber,proto3" json:"page_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -374,9 +373,9 @@ func (x *UpdatePageRequest) GetContent() string {
 	return ""
 }
 
-func (x *UpdatePageRequest) GetSortOrder() int32 {
+func (x *UpdatePageRequest) GetPageNumber() int32 {
 	if x != nil {
-		return x.SortOrder
+		return x.PageNumber
 	}
 	return 0
 }
@@ -426,18 +425,71 @@ func (x *DeletePageRequest) GetId() string {
 	return ""
 }
 
+// DeletePageResponse indicates whether the page deletion was successful.
+type DeletePageResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeletePageResponse) Reset() {
+	*x = DeletePageResponse{}
+	mi := &file_proto_page_page_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeletePageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeletePageResponse) ProtoMessage() {}
+
+func (x *DeletePageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_page_page_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeletePageResponse.ProtoReflect.Descriptor instead.
+func (*DeletePageResponse) Descriptor() ([]byte, []int) {
+	return file_proto_page_page_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeletePageResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *DeletePageResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_proto_page_page_proto protoreflect.FileDescriptor
 
 const file_proto_page_page_proto_rawDesc = "" +
 	"\n" +
-	"\x15proto/page/page.proto\x12\x04page\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xe6\x01\n" +
+	"\x15proto/page/page.proto\x12\x04page\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe8\x01\n" +
 	"\x04Page\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vdocument_id\x18\x02 \x01(\tR\n" +
 	"documentId\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\tR\acontent\x12\x1d\n" +
-	"\n" +
-	"sort_order\x18\x04 \x01(\x05R\tsortOrder\x129\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\x12\x1f\n" +
+	"\vpage_number\x18\x04 \x01(\x05R\n" +
+	"pageNumber\x129\n" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
@@ -452,20 +504,23 @@ const file_proto_page_page_proto_rawDesc = "" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"9\n" +
 	"\x15PaginatePagesResponse\x12 \n" +
 	"\x05pages\x18\x01 \x03(\v2\n" +
-	".page.PageR\x05pages\"m\n" +
+	".page.PageR\x05pages\"o\n" +
 	"\x11CreatePageRequest\x12\x1f\n" +
 	"\vdocument_id\x18\x01 \x01(\tR\n" +
 	"documentId\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1d\n" +
-	"\n" +
-	"sort_order\x18\x03 \x01(\x05R\tsortOrder\"\\\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1f\n" +
+	"\vpage_number\x18\x03 \x01(\x05R\n" +
+	"pageNumber\"^\n" +
 	"\x11UpdatePageRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1d\n" +
-	"\n" +
-	"sort_order\x18\x03 \x01(\x05R\tsortOrder\"#\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x1f\n" +
+	"\vpage_number\x18\x03 \x01(\x05R\n" +
+	"pageNumber\"#\n" +
 	"\x11DeletePageRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xa9\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\">\n" +
+	"\x12DeletePageResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\xab\x02\n" +
 	"\vPageService\x121\n" +
 	"\n" +
 	"CreatePage\x12\x17.page.CreatePageRequest\x1a\n" +
@@ -475,9 +530,9 @@ const file_proto_page_page_proto_rawDesc = "" +
 	"\rPaginatePages\x12\x1a.page.PaginatePagesRequest\x1a\x1b.page.PaginatePagesResponse\x121\n" +
 	"\n" +
 	"UpdatePage\x12\x17.page.UpdatePageRequest\x1a\n" +
-	".page.Page\x12=\n" +
+	".page.Page\x12?\n" +
 	"\n" +
-	"DeletePage\x12\x17.page.DeletePageRequest\x1a\x16.google.protobuf.EmptyB\x1fZ\x1dgithub.com/echoDMS/proto/pageb\x06proto3"
+	"DeletePage\x12\x17.page.DeletePageRequest\x1a\x18.page.DeletePageResponseB\x1fZ\x1dgithub.com/echoDMS/proto/pageb\x06proto3"
 
 var (
 	file_proto_page_page_proto_rawDescOnce sync.Once
@@ -491,7 +546,7 @@ func file_proto_page_page_proto_rawDescGZIP() []byte {
 	return file_proto_page_page_proto_rawDescData
 }
 
-var file_proto_page_page_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_proto_page_page_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_page_page_proto_goTypes = []any{
 	(*Page)(nil),                  // 0: page.Page
 	(*GetPageRequest)(nil),        // 1: page.GetPageRequest
@@ -500,12 +555,12 @@ var file_proto_page_page_proto_goTypes = []any{
 	(*CreatePageRequest)(nil),     // 4: page.CreatePageRequest
 	(*UpdatePageRequest)(nil),     // 5: page.UpdatePageRequest
 	(*DeletePageRequest)(nil),     // 6: page.DeletePageRequest
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 8: google.protobuf.Empty
+	(*DeletePageResponse)(nil),    // 7: page.DeletePageResponse
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_proto_page_page_proto_depIdxs = []int32{
-	7, // 0: page.Page.created_at:type_name -> google.protobuf.Timestamp
-	7, // 1: page.Page.updated_at:type_name -> google.protobuf.Timestamp
+	8, // 0: page.Page.created_at:type_name -> google.protobuf.Timestamp
+	8, // 1: page.Page.updated_at:type_name -> google.protobuf.Timestamp
 	0, // 2: page.PaginatePagesResponse.pages:type_name -> page.Page
 	4, // 3: page.PageService.CreatePage:input_type -> page.CreatePageRequest
 	1, // 4: page.PageService.GetPage:input_type -> page.GetPageRequest
@@ -516,7 +571,7 @@ var file_proto_page_page_proto_depIdxs = []int32{
 	0, // 9: page.PageService.GetPage:output_type -> page.Page
 	3, // 10: page.PageService.PaginatePages:output_type -> page.PaginatePagesResponse
 	0, // 11: page.PageService.UpdatePage:output_type -> page.Page
-	8, // 12: page.PageService.DeletePage:output_type -> google.protobuf.Empty
+	7, // 12: page.PageService.DeletePage:output_type -> page.DeletePageResponse
 	8, // [8:13] is the sub-list for method output_type
 	3, // [3:8] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -535,7 +590,7 @@ func file_proto_page_page_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_page_page_proto_rawDesc), len(file_proto_page_page_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

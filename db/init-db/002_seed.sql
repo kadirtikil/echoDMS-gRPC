@@ -6,7 +6,7 @@ VALUES
   ('a1b2c3d4-1111-1111-1111-000000000003', 'Invoice Template', 'Standard invoice layout', 'typst', 'typst', '0.11', 'pdf', 'a1b2c3d4-1111-1111-1111-000000000002');
 
 -- Pages
-INSERT INTO "pages" ("id", "document_id", "content", "sort_order")
+INSERT INTO "pages" ("id", "document_id", "content", "page_number")
 VALUES
   ('b1b2c3d4-2222-2222-2222-000000000001', 'a1b2c3d4-1111-1111-1111-000000000001', '\\section{Introduction}\nThis thesis explores...', 0),
   ('b1b2c3d4-2222-2222-2222-000000000002', 'a1b2c3d4-1111-1111-1111-000000000001', '\\section{Background}\nDistributed systems are...', 1),

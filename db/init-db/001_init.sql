@@ -51,7 +51,7 @@ CREATE TABLE "pages" (
   "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
   "document_id" uuid NOT NULL,
   "content" text,
-  "sort_order" int NOT NULL DEFAULT 0,
+  "page_number" int NOT NULL DEFAULT 0,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
 );

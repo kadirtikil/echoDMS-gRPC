@@ -3,7 +3,6 @@ syntax = "proto3";
 package page;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 option go_package = "github.com/echoDMS/proto/page";
 
@@ -12,7 +11,7 @@ message Page {
   string id = 1;
   string document_id = 2;
   string content = 3;
-  int32 sort_order = 4;
+  int32 page_number = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
 }
@@ -38,19 +37,25 @@ message PaginatePagesResponse {
 message CreatePageRequest {
   string document_id = 1;
   string content = 2;
-  int32 sort_order = 3;
+  int32 page_number = 3;
 }
 
-// UpdatePageRequest is used to update the content or sort order of an existing page.
+// UpdatePageRequest is used to update the content or page number of an existing page.
 message UpdatePageRequest {
   string id = 1;
   string content = 2;
-  int32 sort_order = 3;
+  int32 page_number = 3;
 }
 
 // DeletePageRequest is used to delete a page by its ID.
 message DeletePageRequest {
   string id = 1;
+}
+
+// DeletePageResponse indicates whether the page deletion was successful.
+message DeletePageResponse {
+  string id = 1;
+  bool success = 2;
 }
 
 // PageService defines the gRPC service for managing pages within documents.
@@ -61,8 +66,8 @@ service PageService {
   rpc GetPage(GetPageRequest) returns (Page);
   // PaginatePages retrieves a paginated list of pages for a specific document.
   rpc PaginatePages(PaginatePagesRequest) returns (PaginatePagesResponse);
-  // UpdatePage updates the content or sort order of a page.
+  // UpdatePage updates the content or page number of a page.
   rpc UpdatePage(UpdatePageRequest) returns (Page);
   // DeletePage deletes a page by its ID.
-  rpc DeletePage(DeletePageRequest) returns (google.protobuf.Empty);
+  rpc DeletePage(DeletePageRequest) returns (DeletePageResponse);
 }
