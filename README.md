@@ -8,3 +8,6 @@ The gRPC implementation does not contain any user authentification.
 FastAPI is used as the gateway.
 
 ## mTLS & Security
+
+
+## LICENSE
